@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.bitbucket.b_c</groupId>
+    <packaging>jar</packaging>
+    <artifactId>unbearable-java-9-patch</artifactId>
+    <name>Unbearable (Token Binding) java.base module patch</name>
+    <version>1.0.0-SNAPSHOT</version>
+  
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.9</source>
+                    <target>1.9</target>
+                    <compilerArgs>
+                      <!-- from https://medium.com/codefx-weekly/java-9-maven-compile-errors-module-names-kill-switches-73411c511750
+                             <arg> will put arguments that contain a space into quotes before
+                            passing them, which javac doesn't like,
+                            so you'll have to do this
+                            <arg>-add-exports</arg><arg>java.base/sun.security.util=ALL-UNNAMED</arg>
+                            instead of this
+                            <arg>-add-exports java.base/sun.security.util=ALL-UNNAMED</arg>
+                            or you'll get invalid flag: -add-exports java.base/sun.security.util=ALL-UNNAMED
+                      -->
+                      <arg>--add-exports</arg><arg>java.base/sun.security.util=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/com.sun.net.ssl.internal.ssl=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.jca=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.net.util=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/jdk.internal.misc=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.internal.interfaces=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.provider.certpath=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.internal.spec=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.validator=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.action=ALL-UNNAMED</arg>
+                      <arg>--add-exports</arg><arg>java.base/sun.security.x509=ALL-UNNAMED</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                       -Xbootclasspath/p:${basedir}/target/classes
+                    </argLine>
+                 </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.7.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>1.9.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.20.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
