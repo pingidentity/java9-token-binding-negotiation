@@ -241,7 +241,7 @@ public abstract class SunJSSE extends java.security.Provider {
     // com.sun.net.ssl.internal.ssl.Provider has been deprecated since JDK 9
     @SuppressWarnings("deprecation")
     private void subclassCheck() {
-        if (getClass() != com.sun.net.ssl.internal.ssl.Provider.class) {
+        if (!getClass().getName().equals(com.sun.net.ssl.internal.ssl.Provider.class.getName())) {
             throw new AssertionError("Illegal subclass: " + getClass());
         }
     }
