@@ -42,10 +42,10 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>
-                       -Xbootclasspath/p:${basedir}/target/classes
-                    </argLine>
-                 </configuration>
+                  <argLine>
+                    --add-exports java.base/sun.security.ssl=ALL-UNNAMED --patch-module java.base=${basedir}/target/classes -Djavax.net.debug=ssl,handshake,session
+                  </argLine>
+                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
