@@ -741,6 +741,10 @@ final class ServerHandshaker extends Handshaker {
         svr_random = new RandomCookie(sslContext.getSecureRandom());
         m1.svr_random = svr_random;
 
+        // -- token binding etc. changes begin --
+        setConnectionRandoms();
+        // -- token binding etc. changes end --
+
         //
         // If client hasn't specified a session we can resume, start a
         // new one and choose its cipher suite and compression options.
@@ -932,6 +936,24 @@ final class ServerHandshaker extends Handshaker {
             // Nothing was negotiated, returned at end of the handshake
             applicationProtocol = "";
         }
+
+        // -- token binding etc. changes begin --
+        HelloExtension emsx = mesg.extensions.get(ExtensionType.EXT_EXTENDED_MASTER_SECRET);
+        if (emsx != null && protocolVersion.v >= ProtocolVersion.TLS11.v) {
+            isExtendedMasterSecretExtension = true;
+            m1.extensions.add(emsx);
+        }
+
+
+        HelloExtension ctbx = mesg.extensions.get(ExtensionType.EXT_TOKEN_BINDING);
+        TokenBindingExtension stbx = TokenBindingExtension
+                .processClientHello(ctbx, isExtendedMasterSecretExtension,
+                        secureRenegotiation, getConnectionSupportedTokenBindingKeyParams());
+        if (stbx != null) {
+            m1.extensions.add(stbx);
+            setConnectionNegotiatedTokenBindingKeyParams(stbx.keyParametersList[0]);
+        }
+        // -- token binding etc. changes end --
 
         if (debug != null && Debug.isOn("handshake")) {
             m1.print(System.out);
@@ -1172,6 +1194,13 @@ final class ServerHandshaker extends Handshaker {
          */
         output.flush();
     }
+
+    // -- token binding etc. changes begin --
+    @Override
+    byte[] getDefaultSupportedTokenBindingKeyParams() {
+        return TokenBindingExtension.getDefaultServerSupportedKeyParams();
+    }
+    // -- token binding etc. changes end --
 
     /*
      * Choose cipher suite from among those supported by client. Sets

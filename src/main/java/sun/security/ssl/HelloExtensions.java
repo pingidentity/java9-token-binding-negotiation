@@ -89,6 +89,12 @@ final class HelloExtensions {
                 extension = new ALPNExtension(s, extlen);
             } else if (extType == ExtensionType.EXT_MAX_FRAGMENT_LENGTH) {
                 extension = new MaxFragmentLengthExtension(s, extlen);
+            // -- token binding etc. changes begin --
+            } else if (type == TokenBindingExtension.ID) {
+                extension = new TokenBindingExtension(s, extType);
+            } else if (type == ExtendedMasterSecretExtension.ID) {
+                extension = new ExtendedMasterSecretExtension(extlen, extType);
+            // -- token binding etc. changes end --
             } else if (extType == ExtensionType.EXT_STATUS_REQUEST) {
                 extension = new CertStatusReqExtension(s, extlen);
             } else if (extType == ExtensionType.EXT_STATUS_REQUEST_V2) {

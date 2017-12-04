@@ -227,6 +227,10 @@ abstract class Handshaker {
     // need to dispose the object when it is invalidated
     boolean invalidated;
 
+    // -- token binding etc. changes begin --
+    boolean isExtendedMasterSecretExtension;
+    // -- token binding etc. changes end --
+
     /*
      * Is this an instance for Datagram Transport Layer Security (DTLS)?
      */
@@ -1290,30 +1294,95 @@ abstract class Handshaker {
         int prfHashLength = prf.getPRFHashLength();
         int prfBlockSize = prf.getPRFBlockSize();
 
-        @SuppressWarnings("deprecation")
-        TlsMasterSecretParameterSpec spec = new TlsMasterSecretParameterSpec(
-                preMasterSecret, (majorVersion & 0xFF), (minorVersion & 0xFF),
-                clnt_random.random_bytes, svr_random.random_bytes,
-                prfHashAlg, prfHashLength, prfBlockSize);
+        // -- token binding etc. changes begin --
+        if (isExtendedMasterSecretExtension) {
 
-        try {
-            KeyGenerator kg = JsseJce.getKeyGenerator(masterAlg);
-            kg.init(spec);
-            return kg.generateKey();
-        } catch (InvalidAlgorithmParameterException |
-                NoSuchAlgorithmException iae) {
-            // unlikely to happen, otherwise, must be a provider exception
-            //
-            // For RSA premaster secrets, do not signal a protocol error
-            // due to the Bleichenbacher attack. See comments further down.
-            if (debug != null && Debug.isOn("handshake")) {
-                System.out.println("RSA master secret generation error:");
-                iae.printStackTrace(System.out);
+            byte[] sessionHash = handshakeHash.getFinishedHash();
+
+            TlsMasterSecretParameterSpec spec = new TlsMasterSecretParameterSpec(
+                    preMasterSecret, protocolVersion.major, protocolVersion.minor,
+                    sessionHash, new byte[0], // overload the randoms to put the session hash in for the seed
+                    prfHashAlg, prfHashLength, prfBlockSize);
+            ExtendedMasterSecretGenerator extendedMasterGenerator = new ExtendedMasterSecretGenerator();
+            try
+            {
+                extendedMasterGenerator.init(spec);
+                SecretKey secretKey = extendedMasterGenerator.generateKey();
+                return secretKey;
             }
-            throw new ProviderException(iae);
+            catch (InvalidAlgorithmParameterException e)
+            {
+                throw new ProviderException(e);
+            }
 
+        } else {
+            @SuppressWarnings("deprecation")
+            TlsMasterSecretParameterSpec spec = new TlsMasterSecretParameterSpec(
+                    preMasterSecret, (majorVersion & 0xFF), (minorVersion & 0xFF),
+                    clnt_random.random_bytes, svr_random.random_bytes,
+                    prfHashAlg, prfHashLength, prfBlockSize);
+
+            try {
+                KeyGenerator kg = JsseJce.getKeyGenerator(masterAlg);
+                kg.init(spec);
+                return kg.generateKey();
+            } catch (InvalidAlgorithmParameterException |
+                    NoSuchAlgorithmException iae) {
+                // unlikely to happen, otherwise, must be a provider exception
+                //
+                // For RSA premaster secrets, do not signal a protocol error
+                // due to the Bleichenbacher attack. See comments further down.
+                if (debug != null && Debug.isOn("handshake")) {
+                    System.out.println("RSA master secret generation error:");
+                    iae.printStackTrace(System.out);
+                }
+                throw new ProviderException(iae);
+
+            }
+        }
+        // -- token binding etc. changes end --
+
+    }
+
+    // -- token binding etc. changes begin --
+    byte[] getConnectionSupportedTokenBindingKeyParams()
+    {
+        byte[] supportedTokenBindingKeyParams;
+        if (conn != null) {
+            supportedTokenBindingKeyParams = conn.getSupportedTokenBindingKeyParams();
+        } else {
+            supportedTokenBindingKeyParams = engine.getSupportedTokenBindingKeyParams();
+        }
+
+        if (supportedTokenBindingKeyParams == null) {
+            supportedTokenBindingKeyParams = getDefaultSupportedTokenBindingKeyParams();
+        }
+
+        return supportedTokenBindingKeyParams;
+    }
+
+    abstract byte[] getDefaultSupportedTokenBindingKeyParams();
+
+    void setConnectionNegotiatedTokenBindingKeyParams(byte negotiatedTokenBindingKeyParams)
+    {
+        if (conn != null) {
+            conn.negotiatedTokenBindingKeyParams = negotiatedTokenBindingKeyParams;
+        } else {
+            engine.negotiatedTokenBindingKeyParams = negotiatedTokenBindingKeyParams;
         }
     }
+
+    void setConnectionRandoms() {
+        // client and server randoms are used by RFC 5705 Keying Material Exporters on SSLEngine/SSLSocket
+        if (conn != null) {
+            conn.clientRandom = clnt_random.random_bytes;
+            conn.serverRandom = svr_random.random_bytes;
+        } else {
+            engine.clientRandom = clnt_random.random_bytes;
+            engine.serverRandom = svr_random.random_bytes;
+        }
+    }
+    // -- token binding etc. changes end --
 
     /*
      * Calculate the keys needed for this connection, once the session's
