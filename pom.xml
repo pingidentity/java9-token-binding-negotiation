@@ -25,6 +25,7 @@
                             <arg>-add-exports java.base/sun.security.util=ALL-UNNAMED</arg>
                             or you'll get invalid flag: -add-exports java.base/sun.security.util=ALL-UNNAMED
                       -->
+                      <arg>--add-exports</arg><arg>java.base/sun.security.ssl=ALL-UNNAMED</arg>
                       <arg>--add-exports</arg><arg>java.base/sun.security.util=ALL-UNNAMED</arg>
                       <arg>--add-exports</arg><arg>java.base/com.sun.net.ssl.internal.ssl=ALL-UNNAMED</arg>
                       <arg>--add-exports</arg><arg>java.base/sun.security.jca=ALL-UNNAMED</arg>
@@ -36,6 +37,11 @@
                       <arg>--add-exports</arg><arg>java.base/sun.security.validator=ALL-UNNAMED</arg>
                       <arg>--add-exports</arg><arg>java.base/sun.security.action=ALL-UNNAMED</arg>
                       <arg>--add-exports</arg><arg>java.base/sun.security.x509=ALL-UNNAMED</arg>
+
+                      <!-- this arg syntax from the 1st comment at https://issues.apache.org/jira/browse/MCOMPILER-311
+                       and patch using src from https://stackoverflow.com/questions/36270671/how-to-patch-openjdk-9-with-jigsaw-integrated-->
+                      <arg>--patch-module=java.base=${basedir}/src/main/java</arg>
+
                     </compilerArgs>
                 </configuration>
             </plugin>
