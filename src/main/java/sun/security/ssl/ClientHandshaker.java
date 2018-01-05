@@ -1626,7 +1626,7 @@ final class ClientHandshaker extends Handshaker {
         // -- token binding etc. changes begin --
         byte[] supportedTokenBindingKeyParams = getConnectionSupportedTokenBindingKeyParams();
 
-        if (supportedTokenBindingKeyParams != null) {
+        if (supportedTokenBindingKeyParams != null && supportedTokenBindingKeyParams.length > 0) {
             clientHelloMessage.extensions.add(new ExtendedMasterSecretExtension());
             clientHelloMessage.extensions.add(new TokenBindingExtension(1, 0, supportedTokenBindingKeyParams));
         }
