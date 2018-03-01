@@ -118,4 +118,18 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <scm>
+    <connection>scm:git:https://github.com/pingidentity/java9-token-binding-negotiation.git</connection>
+    <developerConnection>scm:git:git@github.com:pingidentity/java9-token-binding-negotiation.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/pingidentity/java9-token-binding-negotiation</url>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>maven-repository-on-filesystem</id>
+      <url>file:///${basedir}/target/pseudo-deploy</url>
+    </repository>
+  </distributionManagement>
+
 </project>
