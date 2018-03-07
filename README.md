@@ -92,7 +92,7 @@ The Token Binding negotiation implementation relies on modifications to a few Op
 The modified OpenJDK classes are released under the same GPLv2 + Classpath Exception license of OpenJDK.
 
 
-[1.0.0.v1]:https://github.com/pingidentity/java9-token-binding-negotiation/TODO
+[1.0.0.v1]:https://github.com/pingidentity/java9-token-binding-negotiation/releases/tag/java9-token-binding-negotiation-1.0.0.v1
 
 [token-binding-java]:https://github.com/pingidentity/token-binding-java
 
