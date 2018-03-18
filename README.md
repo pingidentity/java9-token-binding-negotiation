@@ -85,6 +85,7 @@ The Token Binding negotiation implementation relies on modifications to a few Op
 
 | Java 9 Version  | java9-token-binding-negotiation Version
 | ------------- |-------------
+| 9.0.4 | [1.0.0.v2]
 | 9.0.1 | [1.0.0.v1]
 | 9 | unsupported
 
@@ -95,6 +96,8 @@ The modified OpenJDK classes are released under the same GPLv2 + Classpath Excep
 
 
 [1.0.0.v1]:https://github.com/pingidentity/java9-token-binding-negotiation/releases/tag/java9-token-binding-negotiation-1.0.0.v1
+[1.0.0.v2]:https://github.com/pingidentity/java9-token-binding-negotiation/releases/tag/java9-token-binding-negotiation-1.0.0.v2
+
 
 [token-binding-java]:https://github.com/pingidentity/token-binding-java
 [java8-token-binding-negotiation]:https://github.com/pingidentity/java8-token-binding-negotiation
