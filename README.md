@@ -88,6 +88,8 @@ The Token Binding negotiation implementation relies on modifications to a few Op
 | 9.0.1 | [1.0.0.v1]
 | 9 | unsupported
 
+See [java8-token-binding-negotiation] for Token Binding Protocol Negotiation support for Java 8.
+
 ### License
 The modified OpenJDK classes are released under the same GPLv2 + Classpath Exception license of OpenJDK.
 
@@ -95,6 +97,8 @@ The modified OpenJDK classes are released under the same GPLv2 + Classpath Excep
 [1.0.0.v1]:https://github.com/pingidentity/java9-token-binding-negotiation/releases/tag/java9-token-binding-negotiation-1.0.0.v1
 
 [token-binding-java]:https://github.com/pingidentity/token-binding-java
+[java8-token-binding-negotiation]:https://github.com/pingidentity/java8-token-binding-negotiation
+
 
 [I-D.ietf-tokbind-https]:https://tools.ietf.org/html/draft-ietf-tokbind-https
 [I-D.ietf-tokbind-protocol]:https://tools.ietf.org/html/draft-ietf-tokbind-protocol
